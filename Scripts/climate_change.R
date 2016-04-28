@@ -15,9 +15,10 @@ modelS=step(model1)
 # a very interpretable model - just a model that has balanced quality and simplicity 
 # for a particular weighting of quality and simplicity (AIC).
 
-predS=predict(modelS, newdata=testing)
-SSE=sum(predS^2)
-SST=sum(modelS$residuals^2)
-R2=(1-(SSE/SST))
+predictionForS=predict(modelS, newdata=testing)
+SSE=sum((predictionForS-testing$Temp)^2)
+SST=sum((mean(training$Temp)-testing$Temp)^2)
+R2=1-(SSE/SST)
+# predictionForS is prediction Points for Model S (created by step)
 
 
