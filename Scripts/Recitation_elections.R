@@ -157,3 +157,137 @@ sensitivity
 specificity=t[1,1]/(t[1,1]+t[1,2])
 specificity
 
+# SECOND Problem
+
+parole=read.csv('parole.csv')
+summary(parole)
+table(parole$violator)
+str(parole)
+
+# Convert unordered variables with at least 3 levels
+
+parole$crime=factor(parole$crime)
+parole$state=factor(parole$state)
+summary(parole)
+
+set.seed(144)
+#install.packages("caTools")
+library(caTools)
+split = sample.split(parole$violator, SplitRatio = 0.7)
+train = subset(parole, split == TRUE)
+test = subset(parole, split == FALSE)
+table(split)
+473/(473+202)
+
+set.seed(144)
+sample(LETTERS, 5)
+#set.seed(144)
+sample(LETTERS, 5)
+
+set.seed(144)
+split1 = sample.split(parole$violator, SplitRatio = 0.7)
+set.seed(44)
+split2 = sample.split(parole$violator, SplitRatio = 0.7)
+table(split1==split2)
+
+#
+model1=glm(violator ~ ., data=train, family=binomial)
+summary(model1)
+
+# Problem 4.3
+
+exp(1)
+
+mean(train$multiple.offenses)
+table(train$multiple.offenses)
+
+# Odds=exp(a+b1x1+b2x2+...+bjxj)
+# Odds=exp(a+b2x2+...+bjxj)*exp(b1*x1)
+# for x1=1 unit increase and b1=1.6119919
+exp(1.6119919)
+
+# we have a 5.01 increase in the odds relatively to others without x1
+# and otherwise identical
+
+#Problem 4.4
+
+summary(model1)
+model1.coefficients
+
+c=coef(model1)
+c
+c[1]
+c[2]
+coef(model1)["male"]
+
+male=1
+race=1
+age=50
+state2=0
+state3=0
+state4=0
+timeserved=3
+maxsentence=12
+multipleoffences=0
+crime2=1
+crime3=0
+crime4=0
+logit=c[1]*1+ c[2]*male+c[3]*race+c[4]*age+c[5]*state2+c[6]*state3+c[7]*state4+
+  c[8]*timeserved+c[9]*maxsentence+c[10]*multipleoffences+c[11]*crime2+c[12]*crime3+
+  c[13]*crime4
+
+
+c
+logit
+# Odds are the exp(logit)
+odds=exp(logit)
+odds
+
+# Probablility=odds/(1+odds)
+
+Prob=odds/(1+odds)
+Prob
+
+Prob/(1-Prob)
+
+# Prediction on the Test set
+pred=predict(model1, newdata=test, type="response")
+pred
+max(pred)
+
+# Evaluate the model for the 0.5 threshold
+t=table(test$violator, pred>0.5)
+t
+accuracy=(t[1,1]+t[2,2])/nrow(test)
+accuracy
+sensitivity=t[2,2]/(t[2,1]+t[2,2])
+sensitivity
+specificity=t[1,1]/(t[1,1]+t[1,2])
+specificity
+
+# A simple model that predict that everyone is a non violator is
+# TN is the same + FN(False Positives), but TP is zero
+((167+12)+0)/nrow(test)
+str(test)
+#To confirm
+table(test$violator)
+
+t=table(test$violator, pred>0.5)
+t
+t=table(test$violator, pred>0.1)
+t
+
+(t[1,1]+t[2,2])/nrow(test)
+
+summary(model1)
+
+# Using RORC
+install.packages("ROCR")
+library(ROCR)
+
+ROCRpredTest = prediction(pred, test$violator)
+
+auc = as.numeric(performance(ROCRpredTest, "auc")@y.values)
+auc
+
+table(train$violator, train$year)
