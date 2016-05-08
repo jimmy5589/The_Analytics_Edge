@@ -291,3 +291,101 @@ auc = as.numeric(performance(ROCRpredTest, "auc")@y.values)
 auc
 
 table(train$violator, train$year)
+
+# Last homework
+
+loans=read.csv("loans.csv")
+summary(loans)
+str(loans)
+
+na=subset(loans, is.na(loans$log.annual.inc) | is.na(loans$days.with.cr.line) | 
+          is.na(loans$revol.util) | is.na(loans$inq.last.6mths) | is.na(loans$delinq.2yrs) |
+          is.na(loans$pub.rec))
+summary(na)
+head(na)
+summary(na)
+summary(loans)
+
+loans=read.csv("loans_imputed.csv")
+summary(loans)
+
+set.seed(144)
+
+split=sample.split(loans$not.fully.paid,0.7)
+
+train=loans[split==TRUE,]
+test=loans[split==FALSE,]
+nrow(train)
+nrow(test)
+
+model1=glm(not.fully.paid ~ . , data=train, family=binomial)
+summary(model1)
+coef(model1)["fico"]*(700-710)
+oddsAoverB=exp(coef(model1)["fico"]*(700-710))
+oddsAoverB
+
+pred1=predict(model1, newdata=test, type="response")
+predicted.risk=pred1
+t=table(test$not.fully.paid, pred1 > 0.5  )
+t
+accuracy=(t[1,1]+t[2,2])/nrow(test)
+accuracy
+sensitivity=t[2,2]/(t[2,1]+t[2,2])
+sensitivity
+specificity=t[1,1]/(t[1,1]+t[1,2])
+specificity
+
+# Baseline model assume will be not.fully.paid==0 which is the most frequent
+accuracytest=nrow(test[test$not.fully.paid==0,])/nrow(test)
+accuracytest
+
+
+library("ROCR")
+
+rocpredtest= prediction(pred1, test$not.fully.paid)
+auc = as.numeric(performance(rocpredtest, "auc")@y.values)
+auc
+
+# add predicted risk to the test
+test$predicted.risk = predicted.risk
+summary(test)
+
+
+model2=glm(not.fully.paid ~ int.rate , data=train, family=binomial)
+summary(model2)
+pred2=predict(model2, newdata=test, type="response")
+max(pred2)
+head(pred2)
+table(test$not.fully.paid, pred2>0.5)
+
+rocpred2test= prediction(pred2, test$not.fully.paid)
+auc = as.numeric(performance(rocpred2test, "auc")@y.values)
+auc
+
+# To compute interest revenue, consider a $c investment in a loan that has an annual 
+# interest rate r over a period of t years. Using continuous compounding of interest, 
+# this investment pays back c * exp(rt) dollars by the end of the t years, 
+# where exp(rt) is e raised to the r*t power.
+# c*exp(rt)
+# $10 with interest of 6% over 3 years
+10*exp(0.06*3)
+# Profit after t years is c*exp(rt)-c
+
+summary(test)
+
+test$profit = exp(test$int.rate*3) - 1
+
+test$profit[test$not.fully.paid == 1] = -1
+
+max(test$profit*10)
+
+highinterest=test[test$int.rate>=0.15,]
+mean(highinterest$profit)
+prop.table(table(highinterest$not.fully.paid))
+
+cutoff = sort(highinterest$predicted.risk, decreasing=FALSE)[100]
+cutoff
+
+selectedLoans=highinterest[highinterest$predicted.risk <= cutoff,]
+sum(selectedLoans$profit)
+table(selectedLoans$not.fully.paid)
