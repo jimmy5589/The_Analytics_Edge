@@ -146,3 +146,83 @@ accuracy
 
 # Quick question
 prp(StevensTreeCV)
+
+
+#####
+
+Claims=read.csv("ClaimsData.csv")
+
+prop.table(table(Claims$bucket2009))
+library(caTools)
+set.seed(88)
+spl = sample.split(Claims$bucket2009, SplitRatio=0.6)
+ClaimsTrain=subset(Claims, spl==TRUE)
+ClaimsTest=subset(Claims, spl=FALSE)
+
+# Quick question
+str(ClaimsTrain)
+mean(ClaimsTrain$age)
+
+prop.table(table(ClaimsTrain$diabetes))
+##
+
+# Accuracy for the baseline model on the test set
+# Baseline model predicts the same outcome for 2009 as 2008
+#  
+table(ClaimsTest$bucket2009, ClaimsTest$bucket2008)
+
+# add the diagonal and divide by the nrow of test set
+0.68
+
+# Build the penalty matrix
+PenaltyMatrix = matrix(c(0,1,2,3,4,2,0,1,2,3,4,2,0,1,2,6,4,2,0,1,8,6,4,2,0), byrow=TRUE, nrow=5)
+PenaltyMatrix
+# actual on the left, predicted on the righ
+
+as.matrix(table(ClaimsTest$bucket2009, ClaimsTest$bucket2008))*PenaltyMatrix
+# multiplies correspondent numbers in both matrixes
+
+# Penalty error
+sum(as.matrix(table(ClaimsTest$bucket2009, ClaimsTest$bucket2008))*PenaltyMatrix)/nrow(ClaimsTest)
+0.7396207
+
+# Quick test
+# Assume the baseline method would predict cost bucket 1 to everyone
+out=rep(1, times=nrow(ClaimsTest))
+
+# Outcome vs prediction
+pred=ClaimsTest
+str(pred)
+
+pred$bucket2008=as.vector(rep(as.integer(1), times=nrow(ClaimsTest)))
+mean(pred$bucket2008)
+t=table(ClaimsTest$bucket2009, pred$bucket2008)
+t
+
+accuracy=t[1]/nrow(ClaimsTest)
+accuracy
+0.6712678
+
+# Now Penalty Error
+
+PenaltyMatrix = matrix(c(0,1,2,3,4,2,0,1,2,3,4,2,0,1,2,6,4,2,0,1,8,6,4,2,0), byrow=TRUE, nrow=5)
+PenaltyMatrix
+t
+t*PenaltyMatrix[,1]
+
+sum(t*PenaltyMatrix[,1])/nrow(ClaimsTest)
+
+####
+
+library(rpart)
+library(rpart.plot)
+
+ClaimsTree = rpart(bucket2009 ~ age + alzheimers + arthritis + cancer + copd + depression + diabetes + heart.failure + ihd + kidney + osteoporosis + stroke + bucket2008 + reimbursement2008, data=ClaimsTrain, method="class", cp=0.00005)
+prp(ClaimsTree)
+
+PredictTest=predict(ClaimsTree, newdata=ClaimsTest, type="class")
+
+# accuracy now
+
+table(ClaimsTest$bucket2009, PredictTest)
+
