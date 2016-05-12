@@ -109,3 +109,104 @@ abs(0.2904558-0.290456)
 # for sex. If we have an interaction term for every treatment variable with sex, 
 # we will double the number of variables. In smaller data sets, this could quickly lead 
 # to overfitting.
+
+letters=read.csv("letters_ABPR.csv")
+
+letters$isB = as.factor(letters$letter == "B")
+
+set.seed(1000)
+split=sample.split(letters$isB, SplitRatio = 0.5)
+train=subset(letters, split==TRUE)
+test=subset(letters, split==FALSE)
+
+summary(letters)
+
+table(test$isB)
+
+accuracy=1175/(1175+383)
+accuracy
+# 0.754172
+
+CARTb = rpart(isB ~ . - letter, data=train, method="class")
+pred=predict(CARTb, newdata=test, type="class")
+
+nrow(test)
+table(test$isB, pred)
+accuracy=(1118+340)/nrow(test)
+accuracy
+# 0.9358151
+
+set.seed=1000
+forest=randomForest(isB ~ . - letter, data=train)
+pred=predict(forest, newdata=test)
+table(test$isB, pred)
+accuracy=(1164+373)/nrow(test)
+accuracy
+# 0.9865212
+
+
+letters$letter = as.factor( letters$letter )
+
+set.seed(2000)
+split=sample.split(letters$letter, SplitRatio = 0.5)
+train=subset(letters, split==TRUE)
+test=subset(letters, split==FALSE)
+
+# Baseline: predict the most frequent letter
+table(test$letter)
+#accuracy
+401/nrow(test)
+# 0.2573813
+
+CARTl = rpart(letter ~ . - isB, data=train, method="class")
+pred=predict(CARTl, newdata=test, type="class")
+
+table(test$letter, pred)
+# accuracy
+(348+318+363+340)/nrow(test)
+# 0.8786906
+
+set.seed=1000
+
+forest2=randomForest(letter ~ . - isB, data=train)
+pred=predict(forest2, newdata=test)
+table(test$letter, pred)
+
+# accuracy
+(390+379+393+367)/nrow(test)
+# 0.9813864
+
+
+### Last Exercise
+
+census=read.csv("census.csv")
+
+set.seed(2000)
+split=sample.split(census$over50k, SplitRatio = 0.6)
+train=subset(census, split==TRUE)
+test=subset(census, split==FALSE)
+
+logm=glm(over50k ~ . , data=train, family="binomial")
+summary(logm)
+
+pred=predict(logm, newdata=test, type="response")
+table(test$over50k, pred >0.5)
+
+#accuracy
+(9051+1888)/nrow(test)
+
+# 0.8552107
+
+# now baseline accuracy for testing set
+table(test$over50k)
+
+9713/nrow(test)
+# 0.7593621
+
+
+ROCRtest = prediction(pred, test$over50k)
+
+# AUC= Area Under the Curve = measures quality of prediction
+auc = as.numeric(performance(ROCRtest, "auc")@y.values)
+auc
+
