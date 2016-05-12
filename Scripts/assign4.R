@@ -34,6 +34,7 @@ auc
 
 # Trees
 library(rpart)
+install.packages("rpart.plot")
 library(rpart.plot)
 
 CARTmodel = rpart(voting ~ civicduty + hawthorne + self + neighbors, data=gerber)
@@ -64,8 +65,8 @@ abs(men-women)<0.001
 
 # problem 3.3
 
-logit=glm(voting ~ control + sex, data=dat, family=binomial)
-summary(logit)
+LogModel1=glm(voting ~ control + sex, data=gerber, family=binomial)
+summary(LogModel1)
 
 
 exp(-0.055791)=0.9457368 for women 
@@ -79,7 +80,32 @@ exp(0)=1
 # problem 3.4
 
 Possibilities = data.frame(sex=c(0,0,1,1),control=c(0,1,0,1))
-predict(logit, newdata=Possibilities, type="response")
+predict(LogModel1, newdata=Possibilities, type="response")
 Possibilities
 
 abs(0.2908065-0.290456)
+
+#Problem 3.5
+#Interaction term sex:control added
+LogModel2 = glm(voting ~ sex + control + sex:control, data=gerber, family="binomial")
+summary(LogModel2)
+# This coefficient is negative, so that means that a value of 1 in this variable 
+# decreases the chance of voting. This variable will have variable 1 if the person
+# is a woman and in the control group.
+exp(-0.007259)
+# result= 0.9927673
+
+# Problem 3.6
+predict(LogModel2, newdata=Possibilities, type="response")
+abs(0.2904558-0.290456)
+
+# This example has shown that trees can capture nonlinear relationships that logistic
+# regression can not, but that we can get around this sometimes by using variables 
+# that are the combination of two variables. Should we always include all possible 
+# interaction terms of the independent variables when building a logistic regression model?
+
+# We should not use all possible interaction terms in a logistic regression model due to 
+# overfitting. Even in this simple problem, we have four treatment groups and two values 
+# for sex. If we have an interaction term for every treatment variable with sex, 
+# we will double the number of variables. In smaller data sets, this could quickly lead 
+# to overfitting.
