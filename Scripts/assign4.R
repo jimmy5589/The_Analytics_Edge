@@ -210,3 +210,90 @@ ROCRtest = prediction(pred, test$over50k)
 auc = as.numeric(performance(ROCRtest, "auc")@y.values)
 auc
 
+ROCRperf=performance(ROCRtest, "tpr", "fpr")
+plot(ROCRperf)
+
+#0.9061598
+
+summary(logm)
+
+## Now CART model for same dataset
+library(rpart)
+library(rpart.plot)
+
+CART3 = rpart(over50k ~ . , data=train, method="class")
+prp(CART3)
+
+pred3=predict(CART3, newdata=test, type="class")
+
+table(test$over50k, pred3)
+accuracy=(9243+1596)/nrow(test)
+accuracy
+# 0.8473927
+
+pred3=predict(CART3, newdata=test)
+
+head(pred3)
+# Problem 2.5
+# Need to take the secon column cause refers to >50K
+ROCRtest3 = prediction(pred3[,2], test$over50k)
+
+ROCRperf3=performance(ROCRtest3, "tpr", "fpr")
+
+plot(ROCRperf3)
+
+table(pred3[,2])  # for >50K shows 5 different probability values, corresponds to 5 buckets
+table(pred3[,1])  # also for <=50k shows 5 different probability values
+
+# Problem 2.6
+# AUC= Area Under the Curve = measures quality of prediction
+auc = as.numeric(performance(ROCRtest3, "auc")@y.values)
+auc
+# 0.8470256
+
+## Problem 3
+# Forest
+install.packages("randomForest")
+library("randomForest")
+
+set.seed(1)
+trainSmall = train[sample(nrow(train), 2000), ]
+
+set.seed(1)
+smallforest=randomForest(over50k ~ . , data=trainSmall)
+
+predForest=predict(smallforest, newdata=test)
+
+t=table(test$over50k, predForest)
+t
+(9586+1093)/nrow(test)
+# accuracy = 0.8348839
+
+# Problem 3.2
+# One metric that we can look at is the number of times, aggregated over all of the trees 
+# in the random forest model, that a certain variable is selected for a split. 
+# To view this metric, run the following lines of R code (replace "MODEL" with the name 
+# of your random forest model):
+# MODEL=smallforest  
+vu = varUsed(smallforest, count=TRUE)
+
+vusorted = sort(vu, decreasing = FALSE, index.return = TRUE)
+
+dotchart(vusorted$x, names(smallforest$forest$xlevels[vusorted$ix]))
+
+#Problem 3.3
+# A different metric we can look at is related to "impurity", which measures how homogenous
+# each bucket or leaf of the tree is. In each tree in the forest, whenever we select a 
+# variable and perform a split, the impurity is decreased. Therefore, one way to measure 
+# the importance of a variable is to average the reduction in impurity, 
+# taken over all the times that variable is selected for splitting in all of the trees 
+# in the forest. To compute this metric, run the following command in R 
+# (replace "MODEL" with the name of your random forest model):
+
+varImpPlot(smallforest)
+
+
+# Problem 4.1
+# Selectin cp by cross validation
+
+
