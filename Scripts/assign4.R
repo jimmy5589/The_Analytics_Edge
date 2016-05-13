@@ -295,5 +295,12 @@ varImpPlot(smallforest)
 
 # Problem 4.1
 # Selectin cp by cross validation
+install.packages("caret")
+library(caret)
+install.packages("e1071")
+library(e1071)
 
+set.seed(2)
+
+cartGrid = expand.grid( .cp = seq(0.002,0.1,0.002)) 
 
