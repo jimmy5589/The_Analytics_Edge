@@ -303,4 +303,21 @@ library(e1071)
 set.seed(2)
 
 cartGrid = expand.grid( .cp = seq(0.002,0.1,0.002)) 
+numFolds=trainControl(method = "cv", number = 10)
 
+summary(numFolds)
+
+set.seed(2)
+train(over50k ~ . , data=train, method = "rpart", trControl=numFolds, tuneGrid=cartGrid)
+# cp=0.002
+
+CART4 = rpart(over50k ~ . , data=train, method="class", cp=0.002)
+pred4 = predict(CART4, newdata=test, type="class")
+
+table(test$over50k, pred4)
+(9178+1838)/nrow(test)
+# accuracy=0.8612306
+
+library(rpart)
+library(rpart.plot)
+prp(CART4)
