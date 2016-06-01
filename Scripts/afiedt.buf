@@ -1,0 +1,2 @@
+select PARM_CODE, count(*) from SCM.PARAMETERS group by PARM_CODE
+/

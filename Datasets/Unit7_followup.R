@@ -1,3 +1,4 @@
+install.packages("ggplot2")
 library(ggplot2)
 WHO = read.csv("WHO.csv")
 # Create the ggplot object with the data and the aesthetic mapping:
@@ -122,7 +123,7 @@ ggplot(DayHourCounts, aes(x = Hour, y = Var1)) + geom_tile(aes(fill = Freq))
 ggplot(DayHourCounts, aes(x = Hour, y = Var1)) + geom_tile(aes(fill = Freq)) + scale_fill_gradient(name="Total MV Thefts") + theme(axis.title.y = element_blank())
 
 # Change the color scheme
-ggplot(DayHourCounts, aes(x = Hour, y = Var1)) + geom_tile(aes(fill = Freq)) + scale_fill_gradient(name="Total MV Thefts", low="white", high="black") + theme(axis.title.y = element_blank())
+ggplot(DayHourCounts, aes(x = Hour, y = Var1)) + geom_tile(aes(fill = Freq)) + scale_fill_gradient(name="Total MV Thefts", low="yellow", high="red") + theme(axis.title.y = element_blank())
 
 ######
 install.packages("maps")
