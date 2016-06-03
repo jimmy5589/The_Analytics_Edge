@@ -89,3 +89,71 @@ head(users)
 table(users$school, users$locale)
 table(users$gender, users$school)
 users
+
+####
+
+install.packages("igraph")
+library(igraph)
+
+g=graph.data.frame(edges, FALSE, users)
+plot(g, vertex.size=5, vertex.label=NA)
+
+d=degree(g)
+
+table(d>=10)
+
+V(g)$size = degree(g)/2+2
+
+plot(g, vertex.label=NA)
+
+max(V(g)$size)
+min(V(g)$size)
+
+V(g)$color = "black"
+
+V(g)$color[V(g)$gender == "A"] = "red"
+
+V(g)$color[V(g)$gender == "B"] = "gray"
+
+plot(g, vertex.label=NA)
+
+V(g)$color = "black"
+
+V(g)$color[V(g)$school == "A"] = "blue"
+
+V(g)$color[V(g)$school == "AB"] = "green"
+
+plot(g, vertex.label=NA)
+
+
+V(g)$color = "black"
+
+V(g)$color[V(g)$locale == "A"] = "blue"
+
+V(g)$color[V(g)$locale == "B"] = "green"
+
+plot(g, vertex.label=NA, edge.width=1)
+
+
+?igraph.plotting
+
+# The three functions to plot the igraph are 
+# plot.igraph (the function we used through the command "plot"), tkplot, and rglplot. 
+# rglplot makes 3-D plots -- you can try one with rglplot(g, vertex.label=NA). 
+# Once you've made the plot, you can click and drag to rotate the graph. 
+# To use this function, you will need to install and load the "rgl" package.
+
+# To change the edge width, you need to change the edge parameter called "width". 
+# From ?igraph.plotting, we read that we need to append the prefix "edge." to the beginning 
+# for our call to plot, so the full parameter is called "edge.width". For instance, 
+# we could plot with edge width 2 with the command plot(g, edge.width=2, vertex.label=NA).
+
+install.packages("rgl")
+library(rgl)
+
+rglplot(g, vertex.label=NA)
+
+
+
+
+
