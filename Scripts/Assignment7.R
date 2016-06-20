@@ -153,7 +153,74 @@ library(rgl)
 
 rglplot(g, vertex.label=NA)
 
+# Last Exercise
+tweets = read.csv("tweets.csv", stringsAsFactors=FALSE)
 
+library(tm)
+corpus = Corpus(VectorSource(tweets$Tweet))
+corpus = tm_map(corpus, tolower)
+corpus = tm_map(corpus, PlainTextDocument)
+corpus = tm_map(corpus, removePunctuation)
+corpus = tm_map(corpus, removeWords, stopwords("english"))
+frequencies = DocumentTermMatrix(corpus)
+allTweets = as.data.frame(as.matrix(frequencies))
 
+install.packages("wordcloud")
+library(wordcloud)
 
+colnames(allTweets)
+sums=colSums(allTweets)
+max(colSums(allTweets))
 
+which(sums == 1297)
+# it's apple
+wordcloud(colnames(allTweets), colSums(allTweets))
+wordcloud(colnames(allTweets), colSums(allTweets), scale=c(2, .25))
+
+# removing the word "apple"
+corpus = tm_map(corpus, removeWords, c("apple",stopwords("english")))
+frequencies = DocumentTermMatrix(corpus)
+allTweets = as.data.frame(as.matrix(frequencies))
+
+wordcloud(colnames(allTweets), colSums(allTweets))
+wordcloud(colnames(allTweets), colSums(allTweets), scale=c(2, .25))
+?wordcloud
+
+negativeTweets = subset(allTweets, tweets$Avg <= -1)
+
+wordcloud(colnames(negativeTweets), colSums(negativeTweets), colors="blue")
+
+wordcloud(colnames(allTweets), colSums(allTweets), scale=c(2, .25), random.order = FALSE)
+wordcloud(colnames(allTweets), colSums(allTweets), scale=c(2, .25), rot.per = 0.1)
+
+wordcloud(colnames(allTweets), colSums(allTweets), scale=c(2, .25), random.color=TRUE)
+
+wordcloud(colnames(allTweets), colSums(allTweets), scale=c(2, .25), random.color=FALSE)
+
+##
+install.packages("RColorBrewer")
+library(RColorBrewer)
+
+# The function brewer.pal() returns color palettes from the ColorBrewer project 
+# when provided with appropriate parameters, 
+# and the function display.brewer.all() displays the palettes we can choose from.
+display.brewer.pal(8,"Accent")
+display.brewer.pal(8,"Set2")
+display.brewer.pal(8,"PuBuGn")
+display.brewer.pal(8,"Greys")
+
+display.brewer.all()
+
+wordcloud(colnames(allTweets), colSums(allTweets), scale=c(2, .25), colors=brewer.pal(9,"Blues"))
+
+brewer.pal(9,"Blues")
+brewer.pal(9,"Blues")[c(5,6,7,8,9)]
+
+# removing first 4 elements from the palette
+wordcloud(colnames(allTweets), colSums(allTweets), scale=c(2, .25), colors=brewer.pal(9,"Blues")[c(-1,-2,-3,-4)])
+
+# Same same, remoce the first 4
+brewer.pal(9,"Blues")[c(-1,-2,-3,-4)]
+brewer.pal(9,"Blues")[c(5,6,7,8,9)]
+
+c(1,2,3,4,5,6,7,8)[c(-1,-2)]

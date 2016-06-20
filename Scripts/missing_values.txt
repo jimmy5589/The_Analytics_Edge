@@ -1,0 +1,19 @@
+For the rest of this problem, we'll be using a revised version of the dataset that has the missing values filled in with multiple imputation (which was discussed in the Recitation of this Unit). To ensure everybody has the same data frame going forward, you can either run the commands below in your R console (if you haven't already, run the command install.packages("mice") first), or you can download and load into R the dataset we created after running the imputation: loans_imputed.csv.
+
+
+For the rest of this problem, we'll be using a revised version of the dataset that has the missing values filled in with multiple imputation (which was discussed in the Recitation of this Unit). To ensure everybody has the same data frame going forward, you can either run the commands below in your R console (if you haven't already, run the command install.packages("mice") first), or you can download and load into R the dataset we created after running the imputation: loans_imputed.csv.
+
+IMPORTANT NOTE: On certain operating systems, the imputation results are not the same even if you set the random seed. If you decide to do the imputation yourself, please still read the provided imputed dataset (loans_imputed.csv) into R and compare your results, using the summary function. If the results are different, please make sure to use the data in loans_imputed.csv for the rest of the problem.
+
+library(mice)
+
+set.seed(144)
+
+vars.for.imputation = setdiff(names(loans), "not.fully.paid")
+
+imputed = complete(mice(loans[vars.for.imputation]))
+
+loans[vars.for.imputation] = imputed
+
+Note that to do this imputation, we set vars.for.imputation to all variables in the data frame except for not.fully.paid, to impute the values using all of the other independent variables.
+
