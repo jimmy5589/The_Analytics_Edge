@@ -140,13 +140,17 @@ table(trainIN$Q109244)
 
 
 trainIN$Q109244=revalue(trainIN$Q109244, c("No"="No","None"=NA,"Yes"="Yes"))
+trainIN$Q115611=revalue(trainIN$Q115611, c("No"="No","None"=NA,"Yes"="Yes"))
+trainIN$Q98197=revalue(trainIN$Q98197, c("No"="No","None"=NA,"Yes"="Yes"))
 
 
-levels(trainIN$Q109244)
+levels(trainIN$Q98197)
 
 testIN$Q109244=revalue(testIN$Q109244, c("No"="No","None"=NA,"Yes"="Yes"))
+testIN$Q115611=revalue(testIN$Q115611, c("No"="No","None"=NA,"Yes"="Yes"))
+testIN$Q98197=revalue(testIN$Q98197, c("No"="No","None"=NA,"Yes"="Yes"))
 
-table(testIN$Q109244)
+table(testIN$Q98197)
 
 
 #####################

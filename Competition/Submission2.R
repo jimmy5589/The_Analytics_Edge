@@ -35,8 +35,9 @@ table(km$cluster)
 
 
 ###########
+table(trn$Q109244)
 
-
+###########
 library(rpart)
 library(rpart.plot)
 
@@ -59,8 +60,8 @@ table(predictCART)
 library(randomForest)
 
 set.seed(144)
-trnRF = randomForest( Democrat ~ .-USER_ID, data=trn )
-predictRF = predict(trnRF, newdata = tst)
+trnRF = randomForest( Democrat ~ .-USER_ID, data=trn, nodesize=25, ntree=200 )
+predictRF = predict(trnRF, newdata = tst, type = "class")
 
 head(predictRF)
 t=table(tst$Democrat, predictRF >= 0.5)
@@ -69,6 +70,7 @@ t
 accuracy=(t[1,1]+t[2,2])/nrow(tst)
 accuracy
 # 0.6070402
+# nodesize=25, ntree=200   produced accuracy = 0.6149425
 
 ################
 # Submission 2
@@ -97,7 +99,7 @@ write.csv(file = "submission2.csv", x = submission2, quote=FALSE, row.names = FA
 library(randomForest)
 
 set.seed(144)
-trainRF = randomForest( Democrat ~ .-USER_ID, data=train )
+trainRF = randomForest( Democrat ~ .-USER_ID, data=train, nodesize=25, ntree=200 )
 predictRFsub = predict(trainRF, newdata = test)
 
 head(predictRFsub)
@@ -113,7 +115,32 @@ colnames(submission3)=c("USER_ID","Predictions")
 write.csv(file = "submission3.csv", x = submission3, quote=FALSE, row.names = FALSE)
 
 
+# Submission 7
 
+####
+# Submission 3
+####
+model3=glm(Democrat ~ 
+             Q115611 + Q109244 +
+             Q98197 
+           , data=trainIN, family=binomial)
+summary(model3)
+predictTst3 = predict(model3, newdata=testIN, type="response")
+
+table(predictTst3 >= 0.5)
+
+head(predictTst3)
+
+
+# Build the dataframe ##########
+
+submission3=data.frame(test$USER_ID)
+submission3$Predictions=ifelse(predictTst3 >= 0.5, "Democrat","Republican")
+
+table(submission3$Predictions)
+colnames(submission3)=c("USER_ID","Predictions")
+# write.csv file
+write.csv(file = "submission7.csv", x = submission3, quote=FALSE, row.names = FALSE)
 
 
 

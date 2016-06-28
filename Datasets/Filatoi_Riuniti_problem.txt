@@ -1,0 +1,31 @@
+
+filatoi riuniti
+
+The northern regions of Italy are the heartlands of the Italian textile industry, providing textile products for many great Italian (and non-Italian) fashion houses. Most of today's companies were founded at the turn of the century and have grown and thrived despite a series of twentieth century catastrophes, including the Great Depression and World War II. Sales in the entire Italian textile and apparel industry were about $80 billion in 2007. The Italian textile-fashion industry employs over 400,000 people. 
+
+Filatoi Riuniti is a family-owned spinning mill located in northwest Italy. They produce cotton yarn, which is one of the raw materials that is used to produce the fabrics that are then cut and sewn by Italian stylists into the worldwide famous Italian clothes. 
+
+Demand for Filatoi Riuniti's production is strong, but their spinning machine capacity is insufficient to meet its production orders. They decided to outsource part of the spinning production to six local family-owned spinning mills: Ambrosi, Bresciani, Castri, De Blasi, Estensi, and Giuliani. The local mills charge higher prices for spinning finer yarns, so Filatoi Riuniti has decided to spin as much as possible of the finer yarns entirely in-house and to outsource only the spinning of low-end (coarser) yarns. Last month, they faced a total demand of 104,500 kg of cotton and they outsourced 32,000 kg of the low-end sizes. 
+
+Filatoi Riuniti hired a consulting firm to see if the outsourcing strategies to the six local mills could be improved. After analyzing the data, they immediately saw the potential for very large savings through more optimal outsourcing strategies. In this problem, we'll improve the outsourcing strategy of Filatoi Riuniti using linear optimization. (Note: This problem is based off of a real case, but the names have been changed for privacy reasons.)
+
+
+    
+ Problem 1.1 - Formulating the Optimization Problem
+(3 points possible)
+
+Filatoi Riuniti produces four different sizes of yarn: extra fine, fine, medium, and coarse. Their current strategy is to produce all of the fine and extra fine yarn in-house, outsource some of the medium yarn to the lowest-price mill, and outsource all of the coarse yarn to the other mills. To try to improve this strategy, let's set up an optimization problem.
+
+The spreadsheet FilatoiRiuniti.ods for LibreOffice or OpenOffice, and FilatoiRiuniti.xlsx for Microsoft Excel, contains data for the problem. This data includes information about production hours, capacities, costs, and demand. Ambrosi and De Blasi can't produce extra fine yarn, so no data is provided for extra fine yarn at these mills.
+
+The decision variables are the amount of yarn of each size that each company should be assigned to produce. There are four sizes, and seven companies (including Filatoi Riuniti). These decision variables are set up in the spreadsheet. Note that the decision variables should be non-negative - none of the mills can produce a negative amount of yarn!
+
+The objective is to minimize costs. The prices charged by the six local mills for production, as well as the production cost at Filatoi Riuniti, are provided in the spreadsheet. Additionally, the yarn that is spun by the six local mills needs to be transported. The transportation costs per kg of yarn are also provided in the spreadsheet.
+
+Our model has two types of constraints: capacity constraints and demand constraints. The spreadsheet contains a table showing the production capacity and production rate per product for each of the mills (including Filatoi Riuniti). For example, at the Bresciani mill, it takes 0.70 hours to produce one kg of extra fine yarn, and there are a total of 3,000 machines hours per month available at this mill. There is also a table that estimates the demand for the four yarn sizes in the current month. We should produce at least the demand for each yarn type.
+
+Formulate and solve this problem in LibreOffice (or in the spreadsheet software you are using). The objective should minimize the sum of the production and transportation costs. You should have the following constraints: non-negative decision variables, a capacity constraint for each mill, and a demand constraint for each type of yarn. Remember that Ambrosi and De Blasi can't produce extra fine yarn, so you should also account for this.
+
+What is the objective value of the solution?
+
+

@@ -9,7 +9,8 @@ str(my)
 summary(train)
 str(train)
 
-cor(train$Q124742, train$Q124122)
+cor(train$Gender, train$EducationLevel)
+cor(a$Q124742, a$Q124122)
 
 a=as.numeric(train$Q124742)
 ## Convert to numeric
@@ -21,8 +22,6 @@ for (var in to.replace) a[,eval(var)] = as.numeric(a[,eval(var)])
 str(a)
 #####
 cor(a)
-var="Gender"
-a$var
 # Gets the levels
 head(as.numeric(train$Gender))
 head(train$Gender)
@@ -32,9 +31,7 @@ summary(test)
 
 str(train)
 str(test)
-train=a
-train$Party = as.factor(train$Party)
-table(train$Party)
+
 spl=sample.split(train$Party, SplitRatio = 0.7)
 trn=subset(train, spl==TRUE)
 tst=subset(train, spl==FALSE)
