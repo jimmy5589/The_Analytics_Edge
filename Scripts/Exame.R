@@ -36,3 +36,17 @@ odds=exp(logit)
 odds
 1/odds
 1/(1+1/odds)
+
+mydata=head(training,1)
+mydata$PreviousRate
+mydata[1,]$PreviousRate = 0.017
+mydata[1,]$Streak = -3
+mydata[1,]$Unemployment = 0.051
+mydata[1,]$HomeownershipRate = 0.653
+mydata[1,]$DemocraticPres = 0  
+mydata[1,]$MonthsUntilElection = 18 
+
+mydata
+predictMydata=predict(logi, type="response", newdata = mydata)
+predictMydata
+
