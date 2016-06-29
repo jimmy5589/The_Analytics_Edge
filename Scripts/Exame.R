@@ -28,7 +28,7 @@ summary(logi)
 
 logi$coefficients
 
-thismonth=c(1, 0.017, -3, 0.051, 0.653, 0, 18)
+thismonth=c(1, 1.7, -3, 5.1, 65.3, 0, 18)
 logi$coefficients * thismonth
 logit=sum(logi$coefficients * thismonth)
 logit
@@ -38,15 +38,25 @@ odds
 1/(1+1/odds)
 
 mydata=head(training,1)
-mydata$PreviousRate
-mydata[1,]$PreviousRate = 0.017
+
+mydata[1,]$PreviousRate = 1.7
 mydata[1,]$Streak = -3
-mydata[1,]$Unemployment = 0.051
-mydata[1,]$HomeownershipRate = 0.653
-mydata[1,]$DemocraticPres = 0  
+mydata[1,]$Unemployment = 5.1
+mydata[1,]$HomeownershipRate = 65.3
+mydata[1,]$DemocraticPres = 0
 mydata[1,]$MonthsUntilElection = 18 
 
 mydata
 predictMydata=predict(logi, type="response", newdata = mydata)
 predictMydata
+head(training)
 
+predictTest=predict(logi, type="response", newdata = testing)
+
+t=table(testing$RaisedFedFunds, predictTest > 0.5)
+t
+
+accuracy=(t[1,1]+t[2,2])/length(predictTest)
+accuracy
+
+table(testing$RaisedFedFunds)
